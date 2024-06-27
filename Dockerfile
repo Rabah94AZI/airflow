@@ -1,4 +1,4 @@
-#  Utilisez une    image de base avec Python
+#     Utilisez une    image de base avec Python
 FROM python:3.10
 
 # Copiez les fichiers nécessaires dans le conteneur

@@ -1,9 +1,8 @@
-from datetime import datetime, timedelta
+'''from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from scripts.fetch_weather_data import fetch_weather_data
 from scripts.train_model import train_model
-from scripts.load_config import load_config
 import json
 
 def load_config(config_file):
@@ -54,3 +53,33 @@ train_model_task = PythonOperator(
 )
 
 fetch_data_task >> train_model_task
+'''
+
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.dummy import DummyOperator
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'weather_dag',
+    default_args=default_args,
+    description='A simple weather DAG',
+    schedule_interval=timedelta(days=1),
+    start_date=datetime(2023, 6, 27),
+    catchup=False,
+)
+
+start = DummyOperator(
+    task_id='start',
+    dag=dag,
+)
+
+start
